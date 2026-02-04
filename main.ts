@@ -2,21 +2,7 @@
 // REMINDER: GET THE ICONS FROM FONTAWESOME (WHATEVER ITS CALLED)
 
 // TODO more documentation
-namespace Math {
-    // elapsed runtime stuffs (ignore)
-    let __prevRuntime: number = game.runtime();
-    export let elapsed: number = 0;
-
-    game.onUpdate(() => {
-        let __runtime: number = game.runtime();
-        elapsed = (__runtime - __prevRuntime) / 1000;
-        __prevRuntime = __runtime;
-    });
-
-    export function getFPSRatio(ratio: number): number {
-        return Math.bound(ratio * 60 * elapsed, 0, 1);
-    }
-
+namespace MathImproved {
     // courtesy of thomas
     export function derivative(func: (x: number) => number, dx: number = .00001): (x: number) => number {
         return (x: number) => { return (func(x + dx) - func(x)) / dx }
@@ -45,25 +31,6 @@ namespace Math {
             result.push(i);
         }
         return result;
-    }
-
-    /**
-     * Fast Inverse Square Root.
-     * This is a makecode version of quakes fast invsqrt method.
-     * @param num The input number.
-     * @return The inverse square root of the given number.
-     */
-    //% block="fast inverse sqrt of %num"
-    //% weight=95
-    //% group="Approx"
-    export function fastInvSqrt(num: number): number {
-        if (num === 0) return 0;
-
-        let _x = num;
-        let _half = 0.5 * _x;
-        let _y = 1 / Math.sqrt(_x);
-        _y = _y * (1.5 - _half * _y * _y);
-        return _y;
     }
 
     //% block="is %f finite"
@@ -110,7 +77,7 @@ namespace Math {
     //% block="decimal places in %n"
     //% weight=70
     //% group="Utils"
-    export function getDecimals(n: number): number {
+    export function getDecimals(n: number = 0): number {
         let parts = n.toString().split(".");
         return parts.length > 1 ? parts[1].length : 0;
     }
@@ -209,29 +176,6 @@ namespace Math {
     //% group="Utils"
     export function lerp(a: number, b: number, ratio: number): number {
         return a + ratio * (b - a);
-    }
-
-    /**
-     * The same as `Math.lerp` except it changes the ratio based
-     * on the current fps, keeping that seemless effect.
-     * 
-     * ```ts
-     * // Example:
-     * game.onUpdate(function () {
-     *  cur_x = Math.fpsLerp(cur_x, 100, 0.1);
-     * });
-     * ```
-     * 
-     * @param a inital
-     * @param b final
-     * @param ratio
-     * @returns number
-     */
-    //% block="FPS lerp from %a to %b by %ratio"
-    //% weight=34
-    //% group="Utils"
-    export function fpsLerp(a: number, b: number, ratio: number): number {
-        return Math.lerp(a, b, Math.getFPSRatio(ratio));
     }
 
     //% block="bound %value between %min and %max"
