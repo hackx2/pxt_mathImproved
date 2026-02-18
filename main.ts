@@ -88,32 +88,6 @@ namespace MathImproved {
         return Math.abs(a - b) <= d;
     }
 
-    //% block="fast sin of %n radians"
-    //% weight=60
-    //% group="Approx"
-    export function fastSin(n: number): number {
-        n *= (1 / Math.PI);
-
-        if (n > 1) {
-            n -= (Math.ceil(n) >> 1) << 1;
-        } else if (n < -1) {
-            n += (Math.ceil(-n) >> 1) << 1;
-        }
-
-        return (n > 0) ?
-            n * (3.1 + n * (0.5 + n * (-7.2 + n * 3.6)))
-            :
-            n * (3.1 - n * (0.5 + n * (7.2 + n * 3.6)));
-
-    }
-
-    //% block="fast cos of %n radians"
-    //% weight=59
-    //% group="Approx"
-    export function fastCos(n: number): number {
-        return fastSin(n + 1.570796327);
-    }
-
     //% block="sinh of %n"
     //% weight=55
     //% group="Trig"
