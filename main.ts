@@ -3,7 +3,6 @@
 
 // TODO more documentation
 namespace MathImproved {
-    // courtesy of thomas
     export function derivative(func: (x: number) => number, dx: number = .00001): (x: number) => number {
         return (x: number) => { return (func(x + dx) - func(x)) / dx }
     }
@@ -217,11 +216,44 @@ namespace MathImproved {
      */
     //% block="sqrt of 2"
     //% group="Constants"
-    export const SQUARE_ROOT_OF_TWO: number = 1.41421356237;
+    export const ROOT_TWO: number = 1.41421356237;
 
+    /**
+     * Pretty small number.
+     */
     //% block="EPSILON"
     //% group="Constants"
     export const EPSILON: number = 1e-6; //0.0000001;
+
+    /**
+     * Pi
+     */
+    //% block="PI"
+    //% group="Constants"
+    export const PI: number = 3.1415926535897932384626433832795028841971; // no idea how precise this has to between
+    
+    /**
+     * Tau aka 2*pi
+     */
+    //% block="TAU"
+    //% group="Constants"
+    export const TAU: number = 2*PI; // hope this works
+
+    /**
+     * Rad to deg conversion, just multiply
+     */
+    //% block="Rad to Deg"
+    //% group="Constants"
+    export const RADTODEG: number = 180/PI;
+
+    /**
+     * Deg to Rad conversion, just multiply
+     */
+    //% block="Deg to Rad"
+    //% group="Constants"
+    export const DEGTORAD: number = PI/180;
+
+    
 
     // eh...
 
