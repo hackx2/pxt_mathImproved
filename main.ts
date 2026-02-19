@@ -200,11 +200,14 @@ namespace MathImproved {
     export const EPSILON: number = 1e-6; //0.0000001;
 
     /**
-     * Pi
+     * This represents the ratio of the circumference of a circle to its diameter, 
+     * expressed as a constant. 
+     * 
+     * `PI` (π) is approximately `3.14159265358979323...` 
      */
     //% block="PI"
     //% group="Constants"
-    export const PI: number = 3.1415926535897932384626433832795028841971; // no idea how precise this has to between
+    export const PI: number = 3.141592653589793; // 16 digits
     
     /**
      * Tau aka 2*pi
