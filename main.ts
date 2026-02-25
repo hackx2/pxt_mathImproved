@@ -2,6 +2,8 @@
 // REMINDER: GET THE ICONS FROM FONTAWESOME (WHATEVER ITS CALLED)
 
 // TODO more documentation
+// TODO the rest of maths
+// TODO do the blocks for LinearAlgebra
 namespace MathImproved {
     export function derivative(func: (x: number) => number, dx: number = .00001): (x: number) => number {
         return (x: number) => { return (func(x + dx) - func(x)) / dx }
@@ -15,7 +17,7 @@ namespace MathImproved {
      * Returns an range of numbers between a min & max.
      *  ```ts
      *  // example
-     *  range(0, 10); // returns: 0,1,2,3,4,5,6,7,8,9,10
+     *  range(0, 10); // returns: 0,1,2,3,4,5,6,7,8,9
      *  ```
      * @param max `Infinity`
      * @param min `0`
@@ -59,18 +61,6 @@ namespace MathImproved {
         stop2: number
     ): number {
         return start2 + (value - start1) * ((stop2 - start2) / (stop1 - start1));
-    }
-
-    //% block="2D dot product (%ax,%ay) - (%bx,%by)"
-    //% weight=75
-    //% group="Vector2"
-    export function dotProduct(
-        ax: number,
-        ay: number,
-        bx: number,
-        by: number
-    ): number {
-        return ax * bx + ay * by;
     }
 
     //% block="decimal places in %n"
@@ -159,6 +149,36 @@ namespace MathImproved {
         return Max != null && _lBound > Max ? Max : _lBound;
     }
 
+    /**
+     * adds up all of the values of the function between the min and max
+     * inclusive min and max
+     */
+    //% block="sum %function between %min and %max"
+    //% weight=25
+    //% group="Utils"
+    export function sigma(func: (x: number) => number, min: number, max: number): number {
+        let acc: number = 0;
+        for(let i = min; i <= max; i++) {
+            acc += func(i);
+        }
+        return acc;
+    }
+
+    /**
+     * multiplies up all of the values of the function between the min and max
+     * inclusive min and max
+     */
+    //% block="product of %function between %min and %max"
+    //% weight=25
+    //% group="Utils"
+    export function product(func: (x: number) => number, min: number, max: number): number {
+        let acc: number = 1;
+        for (let i = min; i <= max; i++) {
+            acc *= func(i);
+        }
+        return acc;
+    }
+
     // CONSTANTS
 
     //% block="MIN number value"
@@ -241,4 +261,192 @@ namespace MathImproved {
     //% block="negative infinity"
     //% group="Constants"
     export const NEGATIVE_INFINITY: number = -Infinity;
+
+    export namespace LinearAlgebra {
+        export class Vector2 {
+            public x: number;
+            public y: number;
+
+            constructor(x: number, y: number) {
+                this.x = x;
+                this.y = y;
+            }
+
+            public set(x: number, y: number) {
+                this.x = x;
+                this.y = y;
+            }
+
+            public scale(scalar: number): Vector2 {
+                return new Vector2(this.x * scalar, this.y * scalar);
+            }
+
+            public magnitude(): number {
+                return Math.sqrt(this.x ** 2 + this.y ** 2);
+            }
+
+            public add(v: Vector2): Vector2 {
+                return new Vector2(this.x + v.x, this.y + v.y);
+            }
+
+            public cross(v: Vector2): number {
+                return this.x * v.y - this.y * v.x;
+            }
+
+            public dot(v: Vector2): number {
+                return this.x * v.x + this.y * v.y;
+            }
+
+            public toList(): number[] {
+                return [this.x, this.y];
+            }
+
+            public toString(): string {
+                return `(${this.x}, ${this.y})`;
+            }
+
+            public clone(): Vector2 {
+                return new Vector2(this.x, this.y);
+            }
+        }
+
+        export class Vector3 {
+            public x: number;
+            public y: number;
+            public z: number;
+
+            constructor(x: number, y: number, z: number) {
+                this.x = x;
+                this.y = y;
+                this.z = z;
+            }
+
+            public set(x: number, y: number) {
+                this.x = x;
+                this.y = y;
+            }
+
+            public scale(scalar: number): Vector3 {
+                return new Vector3(this.x * scalar, this.y * scalar, this.z * scalar);
+            }
+
+            public magnitude(): number {
+                return Math.sqrt(this.x ** 2 + this.y ** 2 + this.z ** 2);
+            }
+
+            public add(v: Vector3): Vector3 {
+                return new Vector3(this.x + v.x, this.y + v.y, this.z + v.z);
+            }
+
+            public cross(v: Vector3): Vector3 {
+                return new Vector3(this.y * v.z - this.z * v.y, this.x * v.z - this.z * v.x, this.x * v.y - this.y * v.x);
+            }
+
+            public dot(v: Vector3): number {
+                return this.x * v.x + this.y * v.y + this.z * v.z;
+            }
+
+            public toList(): number[] {
+                return [this.x, this.y, this.z];
+            }
+
+            public toVector2(): Vector2 {
+                return new Vector2(this.x, this.y);
+            }
+
+            public toString(): string {
+                return `(${this.x}, ${this.y}, ${this.z})`;
+            }
+
+            public clone(): Vector3 {
+                return new Vector3(this.x, this.y, this.z);
+            }
+        }
+
+        export class VectorN {
+            private components: number[];
+
+            constructor(length: number, ...args: number[]) {
+                if (length <= 0) { throw "Vector dimension must be greater than zero"; }
+                if (length % 1 != 0) { throw "Vector must have integer dimension"; }
+
+                if (args.length == 0) { // init zero vector
+                    this.components = [];
+                    for (let i = 0; i < length; i++) {
+                        this.components.push(0);
+                    }
+                } else if (args.length != length) { throw "inputted components are too short"; } else {
+                    this.components = args;
+                }
+            }
+
+            public set(index: number, value: number) {
+                this.components[index] = value;
+            }
+
+            public get(index: number): number {
+                return this.components[index];
+            }
+
+            public getDim(): number {
+                return this.components.length;
+            }
+
+            public magnitude(): number {
+                return Math.sqrt(this.dot(this)); // black magic: think of it as sqrt(a1*a1 + a2*a2 + ...)
+            }
+
+            public normalize(): VectorN {
+                return this.scale(this.magnitude());
+            }
+
+            public add(v: VectorN): VectorN {
+                if (this.components.length != v.components.length) { throw "Dimensions mismatch"; }
+
+                let result: VectorN = new VectorN(this.components.length);
+                for (let i = 0; i < this.components.length; i++) {
+                    result.set(i, this.components[i] + v.components[i]);
+                }
+                return result;
+            }
+
+            public scale(scalar: number): VectorN {
+                let result: VectorN = new VectorN(this.components.length);
+                for (let i = 0; i < this.components.length; i++) {
+                    result.set(i, this.components[i] * scalar);
+                }
+                return result;
+            }
+
+            public dot(v: VectorN): number {
+                if (this.components.length != v.components.length) { throw "Dimensions mismatch"; }
+                return MathImproved.sigma((x: number) => this.components[x] + v.components[x], 0, this.components.length - 1);
+            }
+
+            public toList(): number[] {
+                return this.components;
+            }
+
+            public toString(): string {
+                let result: string = "(";
+
+                this.components.forEach((val: number) => {
+                    result += val.toString() + ", ";
+                });
+
+                result = result.slice(0, result.length - 3) + ")";
+
+
+                return result;
+            }
+
+            public clone(): VectorN {
+                let copy = new VectorN(this.components.length);
+                for (let i = 0; i < this.components.length; i++) {
+                    copy.set(i, this.components[i]);
+                }
+                return copy;
+            }
+        }
+    }
 }
