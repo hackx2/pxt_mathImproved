@@ -291,6 +291,10 @@ namespace LinearAlgebra {
             return Math.sqrt(this.x ** 2 + this.y ** 2);
         }
 
+        public normalize(): Vector2 {
+            return this.scale(1 / this.magnitude());
+        }
+
         public add(v: Vector2): Vector2 {
             return new Vector2(this.x + v.x, this.y + v.y);
         }
@@ -338,6 +342,10 @@ namespace LinearAlgebra {
 
         public magnitude(): number {
             return Math.sqrt(this.x ** 2 + this.y ** 2 + this.z ** 2);
+        }
+
+        public normalize(): Vector3 {
+            return this.scale(1 / this.magnitude());
         }
 
         public add(v: Vector3): Vector3 {
@@ -446,5 +454,54 @@ namespace LinearAlgebra {
         }
     }
 
+    export class Mat2x2 {
+        /*
+         * [ix, jx],
+         * [iy, jy]
+         * 
+         * named after the fact that it is joined unit vectors
+         */
 
+
+        public ix: number;
+        public iy: number;
+        public jx: number;
+        public jy: number;
+
+        constructor (ix: number, jx: number, iy: number, jy: number) {
+            this.ix = ix;
+            this.iy = iy;
+            this.jx = jx;
+            this.jy = jy;
+        }
+
+        public set(ix: number, jx: number, iy: number, jy: number) {
+            this.ix = ix;
+            this.iy = iy;
+            this.jx = jx;
+            this.jy = jy;
+        }
+
+        public scale(scalar: number): Mat2x2 {
+            return new Mat2x2(this.ix * scalar, this.jx * scalar, this.iy * scalar, this.jy * scalar);
+        }
+
+        public determinant(): number {
+            return this.ix * this.jy - this.jx * this.iy;
+        }
+
+        public normalize(): Mat2x2 {
+            return this.scale(1/this.determinant());
+        }
+
+        public add(ix: number, jx: number, iy: number, jy: number): Mat2x2 {
+            return new Mat2x2(this.ix + ix, this.jx + jx, this.iy + iy, this.jy + jy);
+        }
+
+        public multiply(ix: number, jx: number, iy: number, jy: number): Mat2x2 {
+            return new Mat2x2(this.ix * ix + this.jx * iy, this.ix * jx + this.jx * jy, this.iy * ix + this.jy * iy, this.iy * jx + this.jy * jy);
+        }
+
+        
+    }
 }
