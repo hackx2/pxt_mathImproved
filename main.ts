@@ -462,7 +462,13 @@ namespace LinearAlgebra {
          * named after the fact that it is joined unit vectors
          */
 
-        public static identity: Mat2x2 = new Mat2x2(1,0,0,1);
+        private static _identity: Mat2x2;
+        public static get identity(): Mat2x2 {
+            if (!this._identity) {
+                this._identity = new Mat2x2(1, 0, 0, 1);
+            }
+            return this._identity;
+        }
 
         public ix: number;
         public iy: number;
