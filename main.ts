@@ -462,6 +462,7 @@ namespace LinearAlgebra {
          * named after the fact that it is joined unit vectors
          */
 
+        public static identity: Mat2x2 = new Mat2x2(1,0,0,1);
 
         public ix: number;
         public iy: number;
@@ -502,6 +503,17 @@ namespace LinearAlgebra {
             return new Mat2x2(this.ix * ix + this.jx * iy, this.ix * jx + this.jx * jy, this.iy * ix + this.jy * iy, this.iy * jx + this.jy * jy);
         }
 
-        
+        public apply(vec: Vector2) {
+            return new Vector2(this.ix * vec.x + this.jx * vec.y, this.iy * vec.x + this.jy * vec.y);
+        }
+
+        public toString() {
+            return `[${this.ix}, ${this.jx}
+${this.iy}, ${this.jy}]`;
+        }
+
+        public static rotationMatrix(θ: number) { // in radians
+            return new Mat2x2(Math.cos(θ), -Math.sin(θ), Math.sin(θ), Math.cos(θ));
+        }
     }
 }
