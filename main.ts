@@ -239,6 +239,13 @@ namespace MathImproved {
     export const TAU: number = 2*PI; // hope this works
 
     /**
+         * e aka euler's number
+         */
+    //% block="e"
+    //% group="Constants"
+    export const E: number = 2.7182818284590452353602874713527; // hope this works
+
+    /**
      * Rad to deg conversion, just multiply
      */
     //% block="Rad to Deg"
@@ -501,12 +508,12 @@ namespace LinearAlgebra {
             return this.scale(1/this.determinant());
         }
 
-        public add(ix: number, jx: number, iy: number, jy: number): Mat2x2 {
-            return new Mat2x2(this.ix + ix, this.jx + jx, this.iy + iy, this.jy + jy);
+        public add(addend: Mat2x2): Mat2x2 {
+            return new Mat2x2(this.ix + addend.ix, this.jx + addend.jx, this.iy + addend.iy, this.jy + addend.jy);
         }
 
-        public multiply(ix: number, jx: number, iy: number, jy: number): Mat2x2 {
-            return new Mat2x2(this.ix * ix + this.jx * iy, this.ix * jx + this.jx * jy, this.iy * ix + this.jy * iy, this.iy * jx + this.jy * jy);
+        public multiply(multiplicand: Mat2x2): Mat2x2 {
+            return new Mat2x2(this.ix * multiplicand.ix + this.jx * multiplicand.iy, this.ix * multiplicand.jx + this.jx * multiplicand.jy, this.iy * multiplicand.ix + this.jy * multiplicand.iy, this.iy * multiplicand.jx + this.jy * multiplicand.jy);
         }
 
         public apply(vec: Vector2) {
