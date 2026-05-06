@@ -184,11 +184,13 @@ namespace MathImproved {
     // CONSTANTS
 
     //% block="MIN number value"
+    //% weight=25
     //% group="Constants"
     export const MIN_VALUE_number: number = 5e-324;
 
 
     //% block="MAX number value"
+    //% weight=25
     //% group="Constants"
     export const MAX_VALUE_number: number = 1.79e308;
 
@@ -196,6 +198,7 @@ namespace MathImproved {
      * Maximum integer value.
      */
     //% block="MAX int value"
+    //% weight=25
     //% group="Constants"
     export const MAX_VALUE_INT: number = 0x7fffffff;
 
@@ -203,6 +206,7 @@ namespace MathImproved {
      * Minimum integer value.
      */
     //% block="MIN int value"
+    //% weight=25
     //% group="Constants"
     export const MIN_VALUE_INT: number = -MAX_VALUE_INT;
 
@@ -211,6 +215,7 @@ namespace MathImproved {
      * Square Root of Two.
      */
     //% block="sqrt of 2"
+    //% weight=25
     //% group="Constants"
     export const ROOT_TWO: number = 1.41421356237;
 
@@ -218,6 +223,7 @@ namespace MathImproved {
      * Pretty small number.
      */
     //% block="EPSILON"
+    //% weight=25
     //% group="Constants"
     export const EPSILON: number = 1e-6; //0.0000001;
 
@@ -228,6 +234,7 @@ namespace MathImproved {
      * `PI` (π) is approximately `3.14159265358979323...` 
      */
     //% block="PI"
+    //% weight=25
     //% group="Constants"
     export const PI: number = 3.141592653589793; // 16 digits
     
@@ -235,6 +242,7 @@ namespace MathImproved {
      * Tau aka 2*pi
      */
     //% block="TAU"
+    //% weight=25
     //% group="Constants"
     export const TAU: number = 2*PI; // hope this works
 
@@ -242,6 +250,7 @@ namespace MathImproved {
          * e aka euler's number
          */
     //% block="e"
+    //% weight=25
     //% group="Constants"
     export const E: number = 2.7182818284590452353602874713527; // hope this works
 
@@ -249,6 +258,7 @@ namespace MathImproved {
      * Rad to deg conversion, just multiply
      */
     //% block="Rad to Deg"
+    //% weight=25
     //% group="Constants"
     export const RADTODEG: number = 180/PI;
 
@@ -256,6 +266,7 @@ namespace MathImproved {
      * Deg to Rad conversion, just multiply
      */
     //% block="Deg to Rad"
+    //% weight=25
     //% group="Constants"
     export const DEGTORAD: number = PI/180;
 
@@ -264,10 +275,12 @@ namespace MathImproved {
     // eh...
 
     //% block="positive infinity"
+    //% weight=25
     //% group="Constants"
     export const POSITIVE_INFINITY: number = Infinity;
 
     //% block="negative infinity"
+    //% weight=25
     //% group="Constants"
     export const NEGATIVE_INFINITY: number = -Infinity;
 
