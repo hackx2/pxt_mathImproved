@@ -542,4 +542,44 @@ ${this.iy}, ${this.jy}]`;
             return new Mat2x2(Math.cos(θ), -Math.sin(θ), Math.sin(θ), Math.cos(θ));
         }
     }
+
+    export class Mat3x3 {
+        /*
+         * [ix, jx, kx],
+         * [iy, jy, ky],
+         * [iz, jz, kz]
+         * 
+         * named after the fact that it is joined unit vectors
+         */
+
+        private static _identity: Mat3x3;
+        public static get identity(): Mat3x3 {
+            if (!this._identity) {
+                this._identity = new Mat3x3(1, 0, 0, 0, 1, 0, 0, 0, 1);
+            }
+            return this._identity;
+        }
+
+        public ix: number;
+        public iy: number;
+        public iz: number;
+        public jx: number;
+        public jy: number;
+        public jz: number;
+        public kx: number;
+        public ky: number;
+        public kz: number;
+
+        constructor(ix: number, jx: number, kx: number, iy: number, jy: number, ky: number, iz: number, jz: number, kz: number) {
+            this.ix = ix;
+            this.iy = iy;
+            this.iz = iz;
+            this.jx = jx;
+            this.jy = jy;
+            this.jz = jz;
+            this.kx = kx;
+            this.ky = ky;
+            this.kz = kz;
+        }
+    }
 }
