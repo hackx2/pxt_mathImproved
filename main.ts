@@ -534,8 +534,7 @@ namespace LinearAlgebra {
         }
 
         public toString() {
-            return `[${this.ix}, ${this.jx}
-${this.iy}, ${this.jy}]`;
+            return `[${this.ix}, ${this.jx}\n${this.iy}, ${this.jy}]`;
         }
 
         public static rotationMatrix(θ: number) { // in radians
@@ -581,5 +580,33 @@ ${this.iy}, ${this.jy}]`;
             this.ky = ky;
             this.kz = kz;
         }
+
+        public set(ix: number, jx: number, kx: number, iy: number, jy: number, ky: number, iz: number, jz: number, kz: number) {
+            this.ix = ix;
+            this.iy = iy;
+            this.iz = iz;
+            this.jx = jx;
+            this.jy = jy;
+            this.jz = jz;
+            this.kx = kx;
+            this.ky = ky;
+            this.kz = kz;
+        }
+
+        public scale(k: number) { return new Mat3x3(k * this.ix, k * this.jx, k * this.kx, k * this.iy, k * this.jy, k * this.ky, k * this.iz, k * this.jz, k * this.kz); }
+
+        public add(addend: Mat3x3) {
+            return new Mat3x3(
+                addend.ix + this.ix, addend.jx + this.jx, addend.kx + this.kx, 
+                addend.iy + this.iy, addend.jy + this.jy, addend.ky + this.ky, 
+                addend.iz + this.iz, addend.jz + this.jz, addend.kz + this.kz
+                );
+        }
+
+        public toString() {
+            return `[${this.ix}, ${this.jx}, ${this.kx}\n${this.iy}, ${this.jy}, ${this.ky}\n${this.iz}, ${this.jz}, ${this.kz}]`;
+        }
+
+        
     }
 }
