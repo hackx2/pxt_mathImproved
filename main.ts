@@ -529,6 +529,19 @@ namespace LinearAlgebra {
             return new Mat2x2(this.ix * multiplicand.ix + this.jx * multiplicand.iy, this.ix * multiplicand.jx + this.jx * multiplicand.jy, this.iy * multiplicand.ix + this.jy * multiplicand.iy, this.iy * multiplicand.jx + this.jy * multiplicand.jy);
         }
 
+        public inverse(): Mat2x2 {
+            const det = this.determinant();
+
+            if (det === 0) {
+                throw "Matrix is not invertible";
+            }
+
+            return new Mat2x2(
+                this.jy, -this.jx,
+                -this.iy, this.ix
+            ).scale(1 / det);
+        }
+
         public apply(vec: Vector2) {
             return new Vector2(this.ix * vec.x + this.jx * vec.y, this.iy * vec.x + this.jy * vec.y);
         }
@@ -544,8 +557,8 @@ namespace LinearAlgebra {
 
     export class Mat3x3 {
         /*
-         * [ix, jx, kx],
-         * [iy, jy, ky],
+         * [ix, jx, kx]
+         * [iy, jy, ky]
          * [iz, jz, kz]
          * 
          * named after the fact that it is joined unit vectors
@@ -554,59 +567,432 @@ namespace LinearAlgebra {
         private static _identity: Mat3x3;
         public static get identity(): Mat3x3 {
             if (!this._identity) {
-                this._identity = new Mat3x3(1, 0, 0, 0, 1, 0, 0, 0, 1);
+                this._identity = new Mat3x3(
+                    1, 0, 0,
+                    0, 1, 0,
+                    0, 0, 1
+                );
             }
             return this._identity;
         }
 
-        public ix: number;
-        public iy: number;
-        public iz: number;
-        public jx: number;
-        public jy: number;
-        public jz: number;
-        public kx: number;
-        public ky: number;
-        public kz: number;
+        public ix: number; public iy: number; public iz: number;
+        public jx: number; public jy: number; public jz: number;
+        public kx: number; public ky: number; public kz: number;
 
-        constructor(ix: number, jx: number, kx: number, iy: number, jy: number, ky: number, iz: number, jz: number, kz: number) {
-            this.ix = ix;
-            this.iy = iy;
-            this.iz = iz;
-            this.jx = jx;
-            this.jy = jy;
-            this.jz = jz;
-            this.kx = kx;
-            this.ky = ky;
-            this.kz = kz;
+        constructor(
+            ix: number, jx: number, kx: number,
+            iy: number, jy: number, ky: number,
+            iz: number, jz: number, kz: number
+        ) {
+            this.ix = ix; this.iy = iy; this.iz = iz;
+            this.jx = jx; this.jy = jy; this.jz = jz;
+            this.kx = kx; this.ky = ky; this.kz = kz;
         }
 
-        public set(ix: number, jx: number, kx: number, iy: number, jy: number, ky: number, iz: number, jz: number, kz: number) {
-            this.ix = ix;
-            this.iy = iy;
-            this.iz = iz;
-            this.jx = jx;
-            this.jy = jy;
-            this.jz = jz;
-            this.kx = kx;
-            this.ky = ky;
-            this.kz = kz;
+        public set(
+            ix: number, jx: number, kx: number,
+            iy: number, jy: number, ky: number,
+            iz: number, jz: number, kz: number
+        ) {
+            this.ix = ix; this.iy = iy; this.iz = iz;
+            this.jx = jx; this.jy = jy; this.jz = jz;
+            this.kx = kx; this.ky = ky; this.kz = kz;
         }
 
-        public scale(k: number) { return new Mat3x3(k * this.ix, k * this.jx, k * this.kx, k * this.iy, k * this.jy, k * this.ky, k * this.iz, k * this.jz, k * this.kz); }
-
-        public add(addend: Mat3x3) {
+        public scale(scalar: number): Mat3x3 {
             return new Mat3x3(
-                addend.ix + this.ix, addend.jx + this.jx, addend.kx + this.kx, 
-                addend.iy + this.iy, addend.jy + this.jy, addend.ky + this.ky, 
-                addend.iz + this.iz, addend.jz + this.jz, addend.kz + this.kz
-                );
+                this.ix * scalar, this.jx * scalar, this.kx * scalar,
+                this.iy * scalar, this.jy * scalar, this.ky * scalar,
+                this.iz * scalar, this.jz * scalar, this.kz * scalar
+            );
+        }
+
+        public determinant(): number {
+            return (
+                this.ix * (this.jy * this.kz - this.jz * this.ky) -
+                this.jx * (this.iy * this.kz - this.iz * this.ky) +
+                this.kx * (this.iy * this.jz - this.iz * this.jy)
+            );
+        }
+
+        public normalize(): Mat3x3 {
+            return this.scale(1 / this.determinant());
+        }
+
+        public add(addend: Mat3x3): Mat3x3 {
+            return new Mat3x3(
+                this.ix + addend.ix, this.jx + addend.jx, this.kx + addend.kx,
+                this.iy + addend.iy, this.jy + addend.jy, this.ky + addend.ky,
+                this.iz + addend.iz, this.jz + addend.jz, this.kz + addend.kz
+            );
+        }
+
+        public multiply(m: Mat3x3): Mat3x3 {
+            return new Mat3x3(
+                this.ix * m.ix + this.jx * m.iy + this.kx * m.iz,
+                this.ix * m.jx + this.jx * m.jy + this.kx * m.jz,
+                this.ix * m.kx + this.jx * m.ky + this.kx * m.kz,
+
+                this.iy * m.ix + this.jy * m.iy + this.ky * m.iz,
+                this.iy * m.jx + this.jy * m.jy + this.ky * m.jz,
+                this.iy * m.kx + this.jy * m.ky + this.ky * m.kz,
+
+                this.iz * m.ix + this.jz * m.iy + this.kz * m.iz,
+                this.iz * m.jx + this.jz * m.jy + this.kz * m.jz,
+                this.iz * m.kx + this.jz * m.ky + this.kz * m.kz
+            );
+        }
+
+        public inverse(): Mat3x3 {
+            const det = this.determinant(); // magic
+
+            if (det === 0) {
+                throw "Matrix is not invertible";
+            }
+
+            const ix = this.ix, jx = this.jx, kx = this.kx;
+            const iy = this.iy, jy = this.jy, ky = this.ky;
+            const iz = this.iz, jz = this.jz, kz = this.kz;
+
+            const c00 = (jy * kz - jz * ky);
+            const c01 = -(iy * kz - iz * ky);
+            const c02 = (iy * jz - iz * jy);
+
+            const c10 = -(jx * kz - jz * kx);
+            const c11 = (ix * kz - iz * kx);
+            const c12 = -(ix * jz - iz * jx);
+
+            const c20 = (jx * ky - jy * kx);
+            const c21 = -(ix * ky - iy * kx);
+            const c22 = (ix * jy - iy * jx);
+
+            return new Mat3x3(
+                c00, c10, c20,
+                c01, c11, c21,
+                c02, c12, c22
+            ).scale(1 / det);
+        }
+
+        public apply(vec: Vector3) {
+            return new Vector3(
+                this.ix * vec.x + this.jx * vec.y + this.kx * vec.z,
+                this.iy * vec.x + this.jy * vec.y + this.ky * vec.z,
+                this.iz * vec.x + this.jz * vec.y + this.kz * vec.z
+            );
         }
 
         public toString() {
-            return `[${this.ix}, ${this.jx}, ${this.kx}\n${this.iy}, ${this.jy}, ${this.ky}\n${this.iz}, ${this.jz}, ${this.kz}]`;
+            return `[${this.ix}, ${this.jx}, ${this.kx}\n` +
+                ` ${this.iy}, ${this.jy}, ${this.ky}\n` +
+                ` ${this.iz}, ${this.jz}, ${this.kz}]`;
         }
 
-        
+        public static rotationX(theta: number): Mat3x3 {
+            const c = Math.cos(theta);
+            const s = Math.sin(theta);
+            return new Mat3x3(
+                1, 0, 0,
+                0, c, -s,
+                0, s, c
+            );
+        }
+
+        public static rotationY(theta: number): Mat3x3 {
+            const c = Math.cos(theta);
+            const s = Math.sin(theta);
+            return new Mat3x3(
+                c, 0, s,
+                0, 1, 0,
+                -s, 0, c
+            );
+        }
+
+        public static rotationZ(theta: number): Mat3x3 {
+            const c = Math.cos(theta);
+            const s = Math.sin(theta);
+            return new Mat3x3(
+                c, -s, 0,
+                s, c, 0,
+                0, 0, 1
+            );
+        }
+    }
+
+    export class MatNxM {
+        private data: number[][];
+        private rows: number;
+        private cols: number;
+
+        constructor(rows: number, cols: number, args: number[][] = null) {
+            if (rows <= 0 || cols <= 0) { throw "Matrix dimensions must be greater than zero"; }
+            if (rows % 1 !== 0 || cols % 1 !== 0) { throw "Matrix dimensions must be integers"; }
+
+            this.rows = rows;
+            this.cols = cols;
+
+            if (!args || args.length === 0) {
+                // zero matrix
+                this.data = [];
+                for (let r = 0; r < rows; r++) {
+                    const row: number[] = [];
+                    for (let c = 0; c < cols; c++) {
+                        row.push(0);
+                    }
+                    this.data.push(row);
+                }
+            } else {
+                if (args.length !== rows) { throw "Row count mismatch"; }
+                for (let r = 0; r < rows; r++) {
+                    if (args[r].length !== cols) { throw "Column count mismatch"; }
+                }
+
+                // deep copy
+                this.data = args.map(row => row.slice());
+            }
+        }
+
+        public get(r: number, c: number): number {
+            return this.data[r][c];
+        }
+
+        public set(r: number, c: number, value: number) {
+            this.data[r][c] = value;
+        }
+
+        public getRows(): number {
+            return this.rows;
+        }
+
+        public getCols(): number {
+            return this.cols;
+        }
+
+        public getRow(r: number): VectorN {
+            return new VectorN(this.cols, this.data[r].slice());
+        }
+
+        public getCol(c: number): VectorN {
+            const col: number[] = [];
+            for (let r = 0; r < this.rows; r++) {
+                col.push(this.data[r][c]);
+            }
+            return new VectorN(this.rows, col);
+        }
+
+        public static fromVectors(vectors: VectorN[], asColumns: boolean = true): MatNxM {
+            if (vectors.length === 0) { throw "No vectors provided"; }
+
+            const dim = vectors[0].getDim();
+            for (let v of vectors) {
+                if (v.getDim() !== dim) { throw "Vector dimension mismatch"; }
+            }
+
+            if (asColumns) {
+                const result = new MatNxM(dim, vectors.length);
+                for (let c = 0; c < vectors.length; c++) {
+                    for (let r = 0; r < dim; r++) {
+                        result.set(r, c, vectors[c].get(r));
+                    }
+                }
+                return result;
+            } else {
+                const result = new MatNxM(vectors.length, dim);
+                for (let r = 0; r < vectors.length; r++) {
+                    for (let c = 0; c < dim; c++) {
+                        result.set(r, c, vectors[r].get(c));
+                    }
+                }
+                return result;
+            }
+        }
+
+        public clone(): MatNxM {
+            return new MatNxM(this.rows, this.cols, this.data);
+        }
+
+        public add(m: MatNxM): MatNxM {
+            if (this.rows !== m.rows || this.cols !== m.cols) {
+                throw "Matrix dimension mismatch";
+            }
+
+            const result = new MatNxM(this.rows, this.cols);
+
+            for (let r = 0; r < this.rows; r++) {
+                for (let c = 0; c < this.cols; c++) {
+                    result.data[r][c] = this.data[r][c] + m.data[r][c];
+                }
+            }
+
+            return result;
+        }
+
+        public scale(scalar: number): MatNxM {
+            const result = new MatNxM(this.rows, this.cols);
+
+            for (let r = 0; r < this.rows; r++) {
+                for (let c = 0; c < this.cols; c++) {
+                    result.data[r][c] = this.data[r][c] * scalar;
+                }
+            }
+
+            return result;
+        }
+
+        public multiply(m: MatNxM): MatNxM {
+            if (this.cols !== m.rows) {
+                throw "Matrix multiplication dimension mismatch";
+            }
+
+            const result = new MatNxM(this.rows, m.cols);
+
+            for (let r = 0; r < this.rows; r++) {
+                for (let c = 0; c < m.cols; c++) {
+                    let sum = 0;
+                    for (let k = 0; k < this.cols; k++) {
+                        sum += this.data[r][k] * m.data[k][c];
+                    }
+                    result.data[r][c] = sum;
+                }
+            }
+
+            return result;
+        }
+
+        public apply(vec: VectorN): VectorN {
+            if (this.cols !== vec.getDim()) {
+                throw "Matrix-vector dimension mismatch";
+            }
+
+            const result = new VectorN(this.rows);
+
+            for (let r = 0; r < this.rows; r++) {
+                let sum = 0;
+                for (let c = 0; c < this.cols; c++) {
+                    sum += this.data[r][c] * vec.get(c);
+                }
+                result.set(r, sum);
+            }
+
+            return result;
+        }
+
+        public transpose(): MatNxM {
+            const result = new MatNxM(this.cols, this.rows);
+
+            for (let r = 0; r < this.rows; r++) {
+                for (let c = 0; c < this.cols; c++) {
+                    result.data[c][r] = this.data[r][c];
+                }
+            }
+
+            return result;
+        }
+
+        public swapRows(r1: number, r2: number) {
+            const temp = this.data[r1];
+            this.data[r1] = this.data[r2];
+            this.data[r2] = temp;
+        }
+
+        public determinant(): number {
+            if (this.rows !== this.cols) {
+                throw "Determinant only defined for square matrices";
+            }
+
+            const mat = this.clone().data;
+            let det = 1;
+            let sign = 1;
+
+            for (let i = 0; i < this.rows; i++) {
+                // find pivot
+                let pivot = i;
+                while (pivot < this.rows && mat[pivot][i] === 0) {
+                    pivot++;
+                }
+
+                if (pivot === this.rows) return 0;
+
+                if (pivot !== i) {
+                    [mat[i], mat[pivot]] = [mat[pivot], mat[i]];
+                    sign *= -1;
+                }
+
+                const pivotVal = mat[i][i];
+                det *= pivotVal;
+
+                for (let r = i + 1; r < this.rows; r++) {
+                    const factor = mat[r][i] / pivotVal;
+                    for (let c = i; c < this.cols; c++) {
+                        mat[r][c] -= factor * mat[i][c];
+                    }
+                }
+            }
+
+            return det * sign;
+        }
+
+        public inverse(): MatNxM { // gauss-jordan alg
+            if (this.rows !== this.cols) {
+                throw "Inverse only defined for square matrices";
+            }
+
+            const n = this.rows;
+            const mat = this.clone().data;
+            const inv = MatNxM.identity(n).data;
+
+            for (let i = 0; i < n; i++) {
+                // find pivot
+                let pivot = i;
+                while (pivot < n && mat[pivot][i] === 0) {
+                    pivot++;
+                }
+
+                if (pivot === n) {
+                    throw "Matrix is not invertible";
+                }
+
+                // swap rows
+                [mat[i], mat[pivot]] = [mat[pivot], mat[i]];
+                [inv[i], inv[pivot]] = [inv[pivot], inv[i]];
+
+                const pivotVal = mat[i][i];
+
+                // normalize row
+                for (let c = 0; c < n; c++) {
+                    mat[i][c] /= pivotVal;
+                    inv[i][c] /= pivotVal;
+                }
+
+                // eliminate others
+                for (let r = 0; r < n; r++) {
+                    if (r === i) continue;
+
+                    const factor = mat[r][i];
+                    for (let c = 0; c < n; c++) {
+                        mat[r][c] -= factor * mat[i][c];
+                        inv[r][c] -= factor * inv[i][c];
+                    }
+                }
+            }
+
+            return new MatNxM(n, n, inv);
+        }
+
+        public toString(): string {
+            return this.data.map(row => "[" + row.join(", ") + "]").join("\n");
+        }
+
+        public toList(): number[][] {
+            return this.data.map(row => row.slice());
+        }
+
+        public static identity(size: number): MatNxM {
+            const result = new MatNxM(size, size);
+            for (let i = 0; i < size; i++) {
+                result.data[i][i] = 1;
+            }
+            return result;
+        }
     }
 }
